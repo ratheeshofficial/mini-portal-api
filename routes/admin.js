@@ -50,6 +50,16 @@ router.post("/register", validateData, async (req, res) => {
   }
 });
 
+//Get Admin
+router.get("/", async (req, res) => {
+  try {
+    const getAdmin = await Admin.find();
+    res.status(200).json(getAdmin);
+  } catch (error) {
+    res.status(500).json(error.message);
+  }
+});
+
 // LOGIN
 router.post("/login", async (req, res) => {
   try {
