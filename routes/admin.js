@@ -112,7 +112,6 @@ router.post("/forgot-password", async (req, res) => {
 router.post("/reset-password/:token", async (req, res) => {
   // const token = jwt.sign({ adminId: "admin" }, "AdminResetKey");
   try {
-    // const { password } = req.body;
     const { token } = req.params;
     console.log("token", token);
     const isValid = jwt.verify(token, "AdminResetKey");
