@@ -21,6 +21,6 @@ mongoose
 app.use("/api/admin", authAdmin);
 app.use("/api/student", studentAdmin);
 
-app.listen("5000", () => {
-  console.log("server is started in 5000...");
+app.listen("6000", () => {
+  console.log("server is started in 6000...");
 });

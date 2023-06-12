@@ -97,7 +97,7 @@ router.post("/forgot-password", async (req, res) => {
   }
 
   // Generate a random token
-  const token = jwt.sign({ adminId: admin._id }, "AdminResetKey");
+  const token = jwt.sign({ adminId: admin._id }, "securityKey");
 
   sgMail.setApiKey(process.env.SENDGRID_API_KEY);
   const msg = {
@@ -124,7 +124,8 @@ router.post("/reset-password/:token", async (req, res) => {
   try {
     const { token } = req.params;
     console.log("token", token);
-    const isValid = jwt.verify(token, "AdminResetKey");
+    const isValid = jwt.verify(token, "securityKey");
+    console.log("isValid", isValid);
     if (!isValid) {
       res.status(403).json("error in verify token");
     }

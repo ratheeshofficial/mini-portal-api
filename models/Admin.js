@@ -12,8 +12,12 @@ const AdminSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      enum: ["superAdmin", "admin", "student"],
+      enum: ["superAdmin", "evaluator", "admin", "student"],
       default: "student",
+    },
+    assignedTasks: {
+      type: Array,
+      required: false,
     },
   },
   { timestamps: true }
