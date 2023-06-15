@@ -21,6 +21,10 @@ const StudentSchema = new mongoose.Schema(
     accept: {
       type: Boolean,
     },
+    assignedTo: {
+      type: String,
+      ref: "Admin",
+    },
   },
   { timestamps: true }
 );

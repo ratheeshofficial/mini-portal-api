@@ -64,11 +64,9 @@ router.get("/", async (req, res) => {
 router.post("/login", async (req, res) => {
   try {
     const admin = await Admin.findOne({ email: req.body.email });
-    // console.log("admin", admin);
     if (!admin) return res.status(400).json("email not found");
 
     var token = jwt.sign({ AdminId: admin._id }, "securityKey");
-    // console.log("token", token);
 
     const isPasswordCorrect = await bcrypt.compare(
       req.body.password,
@@ -78,7 +76,6 @@ router.post("/login", async (req, res) => {
     if (!isPasswordCorrect)
       return res.status(400).json("Wrong password or email");
     const { password, ...others } = admin._doc;
-    // console.log("others", others);
     res.status(200).json({ ...others, token });
   } catch (err) {
     res.status(500).json(err.message);
@@ -90,7 +87,6 @@ router.post("/login", async (req, res) => {
 router.post("/forgot-password", async (req, res) => {
   // const { email } = req.body;
   const admin = await Admin.findOne({ email: req.body.email });
-  console.log("admin", admin);
 
   if (!admin) {
     return res.status(400).json("email does not exist");
@@ -123,9 +119,7 @@ router.post("/reset-password/:token", async (req, res) => {
   // const token = jwt.sign({ adminId: "admin" }, "AdminResetKey");
   try {
     const { token } = req.params;
-    console.log("token", token);
     const isValid = jwt.verify(token, "securityKey");
-    console.log("isValid", isValid);
     if (!isValid) {
       res.status(403).json("error in verify token");
     }
@@ -134,7 +128,6 @@ router.post("/reset-password/:token", async (req, res) => {
     const hashedPass = bcrypt.hashSync(req.body.password, salt);
     Object.assign(admin, { password: hashedPass });
     const adminData = await admin.save();
-    console.log("adminData", adminData);
 
     res.status(200).json(adminData);
   } catch (error) {
