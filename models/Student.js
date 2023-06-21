@@ -25,6 +25,9 @@ const StudentSchema = new mongoose.Schema(
       type: String,
       ref: "Admin",
     },
+    status: {
+      type: Boolean,
+    },
   },
   { timestamps: true }
 );

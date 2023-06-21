@@ -25,11 +25,24 @@ router.get("/", authMiddleWare(), async (req, res) => {
   try {
     // User is not a superAdmin, return assignedTasks data
     const admin = await Admin.findOne({ _id: req.evaluator });
+    // console.log("admin", admin);
 
     if (admin.role === "superAdmin") {
       const admins = await Student.find().populate({ path: "assignedTo" });
       return res.json(admins);
     }
+
+    if (admin.role === "evaluator") {
+      const assignedTo = await Student.find({ assignedTo: admin._id });
+      const assignedToId = assignedTo[0].assignedTo;
+
+      const evaluatorId = admin._id.toString();
+
+      if (assignedToId === evaluatorId) {
+        return res.json(assignedTo);
+      }
+    }
+
     const assignedTasks = admin.assignedTasks;
     res.json(assignedTasks);
   } catch (error) {
@@ -41,7 +54,22 @@ router.put("/:id", async (req, res) => {
   const studentId = req.params.id;
 
   try {
-    const updatedStudent = await Student.findByIdAndUpdate(
+    const student = await Student.findById(studentId);
+
+    if (!student) {
+      return res.status(404).json({ message: "Student not found" });
+    }
+
+    // Check if the 'status' field exists in the student record
+    if (!student.hasOwnProperty("status")) {
+      student.status = req.body.status; // Add the 'status' field
+    } else {
+      student.status = req.body.status; // Update the existing 'status' field
+    }
+
+    await student.save();
+
+    const updatedStudents = await Student.findByIdAndUpdate(
       studentId,
       {
         name: req.body.name,
@@ -55,11 +83,11 @@ router.put("/:id", async (req, res) => {
       { new: true }
     );
 
-    if (!updatedStudent) {
-      return res.status(404).json({ message: "Student not found" });
+    if (!updatedStudents) {
+      return res.status(404).json({ message: "Student not updated" });
     }
 
-    res.status(200).json(updatedStudent);
+    res.status(200).json(updatedStudents);
   } catch (error) {
     res.status(400).json(error.message);
   }
